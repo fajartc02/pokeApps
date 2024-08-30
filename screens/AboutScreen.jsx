@@ -6,28 +6,29 @@ import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import Colors from "../constants/Colors";
 import { TouchableOpacity } from "react-native";
-export default function AboutScreen({ navigation }) {
+
+export default function AboutScreen() {
   const StorePokemon = JSON.parse(SecureStore.getItem("pokemons") || []);
   const [pokemons, setPokemons] = useState(StorePokemon);
 
   function updatePokemon() {
     setPokemons(JSON.parse(SecureStore.getItem("pokemons") || []));
   }
+  useEffect(() => {
+    updatePokemon();
+  }, []);
 
   return (
     <View style={styles.container}>
       <Image
         source={require("../assets/images/poke-gif.gif")}
-        style={{ width: 200, height: 200 }}
+        style={{ width: 100, height: 100 }}
       />
-      <MonoText style={styles.text}>Hallo, Chairil Nizam.</MonoText>
+      <MonoText style={styles.text}>Pika Pi Pika Chu.</MonoText>
       <MonoText style={{ ...styles.text, marginBottom: 50 }}>
         Pokemon Apps Version 1.0.0
       </MonoText>
       <View style={{ padding: 10 }}>
-        <TouchableOpacity onPress={updatePokemon} style={styles.btn}>
-          <Text>Update Pokemon</Text>
-        </TouchableOpacity>
         <Text>
           Yeay Kamu sudah mendapat sebanyak{" "}
           <Text
@@ -45,25 +46,32 @@ export default function AboutScreen({ navigation }) {
           Pokemon, Ayo Kumpulkan Lagi!
         </Text>
       </View>
-
-      {pokemons.length === 0 ? <MonoText>Belum Ada</MonoText> : null}
       <FlatList
         data={pokemons}
         contentContainerStyle={{ alignSelf: "flex-start" }}
         numColumns={3}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
+        columnWrapperStyle={{ justifyContent: "space-evenly" }}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<MonoText>Belum Ada Pokemon</MonoText>}
+        ListEmptyComponent={
+          <MonoText style={{ marginVertical: 50, color: Colors.primary.text }}>
+            Belum Ada Pokemon
+          </MonoText>
+        }
         renderItem={({ item }, index) => {
           return (
             <View style={styles.card}>
               <Text
                 style={{
                   ...styles.text,
-                  fontSize: 12,
+                  fontSize: 10,
                   color: Colors.primary.text,
-                  backgroundColor: Colors.primary.background,
+                  textTransform: "uppercase",
+                  textShadowColor: "rgba(0, 0, 0, 0.75)",
+                  textShadowOffset: { width: -1, height: 1 },
+                  textShadowRadius: 1,
+                  textAlign: "center",
                   padding: 2,
+                  borderRadius: 10,
                 }}
               >
                 Pokemon {item.name}
@@ -119,7 +127,6 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
   },
   card: {
     margin: 2,
@@ -132,6 +139,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     justifyContent: "center",
     alignItems: "center",
+    width: "30%",
+    height: 120,
   },
   separator: {
     marginVertical: 30,

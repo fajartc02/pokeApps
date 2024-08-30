@@ -1,45 +1,45 @@
 {
-  "expo": {
-    "name": "pokeApps",
-    "slug": "pokeApps",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/bg-pokemon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/bg-pokemon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#F7D346"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/bg-pokemon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.fajartc02.pokeApps"
-    },
-    "web": {
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-font",
-      "expo-asset"
-    ],
-    "owner": "fajartc02",
-    "extra": {
-      "eas": {
-        "projectId": "1656e388-c86d-4d71-b49f-c6e54f9481d4"
-      }
+    "expo": {
+        "name": "pokeApps",
+        "slug": "pokeApps",
+        "version": "1.0.1",
+        "orientation": "portrait",
+        "icon": "./assets/images/bg-pokemon.png",
+        "scheme": "myapp",
+        "userInterfaceStyle": "automatic",
+        "splash": {
+            "image": "./assets/images/bg-pokemon.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#F7D346"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/bg-pokemon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "package": "com.fajartc02.pokeApps"
+        },
+        "web": {
+            "favicon": "./assets/images/favicon.png"
+        },
+        "plugins": [
+            "expo-font",
+            "expo-asset"
+        ],
+        "owner": "fajartc02",
+        "extra": {
+            "eas": {
+                "projectId": "1656e388-c86d-4d71-b49f-c6e54f9481d4"
+            }
+        }
     }
-  }
 }

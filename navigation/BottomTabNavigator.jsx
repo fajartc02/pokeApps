@@ -3,12 +3,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { useColorScheme } from "react-native";
+import { Image, Text, useColorScheme } from "react-native";
 
 import Colors from "../constants/Colors";
 import HomeScreen from "../screens/HomeScreen";
 import AboutScreen from "../screens/AboutScreen";
 import DefaultHeader from "../components/DefaultHeader";
+import { View } from "../components/Themed";
 
 const BottomTab = createBottomTabNavigator();
 
@@ -18,26 +19,65 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
-      screenOptions={{ tabBarActiveTintColor: Colors[colorScheme].tint }}
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarInactiveTintColor: "gray",
+      }}
     >
       <BottomTab.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeNavigator}
         options={{
           headerShown: true,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="tennisball-outline" color={color} />
-          ),
+          unmountOnBlur: true,
+          // tabBarIcon: ({ color }) => (
+          //   <TabBarIcon name="tennisball-outline" color={color} />
+          // ),
+          tabBarIcon: ({ color, focused, size }) => {
+            return (
+              <View>
+                {focused ? (
+                  <Image
+                    source={require("../assets/images/move-pokeball.gif")}
+                    style={{ width: 30, height: 30 }}
+                  />
+                ) : (
+                  <Image
+                    source={require("../assets/images/pokeball.png")}
+                    style={{ width: 30, height: 30 }}
+                  />
+                )}
+              </View>
+            );
+          },
           headerTitle: (props) => <DefaultHeader {...props} />,
         }}
       />
       <BottomTab.Screen
-        name="About"
-        component={AboutScreen}
+        name="Profile "
+        component={AboutNavigator}
         options={{
-          headerShown: true,
-          tabBarIcon: ({ color }) => <TabBarIcon name="book" color={color} />,
-          headerTitle: (props) => <DefaultHeader {...props} />,
+          unmountOnBlur: true,
+          headerShown: false,
+          tabBarItemStyle: { color: "red" },
+          tabBarIcon: ({ color, focused }) => {
+            return (
+              <View>
+                {focused ? (
+                  <Image
+                    source={require("../assets/images/ash-move.gif")}
+                    style={{ width: 30, height: 30 }}
+                  />
+                ) : (
+                  <Image
+                    source={require("../assets/images/ash.png")}
+                    style={{ width: 30, height: 30 }}
+                  />
+                )}
+              </View>
+            );
+          },
+          // headerTitle: (props) => <DefaultHeader {...props} />,
         }}
       />
     </BottomTab.Navigator>
@@ -60,7 +100,7 @@ function HomeNavigator() {
       <TabHomeStack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ headerTitle: "Home" }}
+        options={{ headerTitle: "Home", headerShown: false }}
       />
     </TabHomeStack.Navigator>
   );
@@ -72,9 +112,12 @@ function AboutNavigator() {
   return (
     <TabAboutStack.Navigator>
       <TabAboutStack.Screen
-        name="AboutScreen"
+        name="Profile"
         component={AboutScreen}
-        options={{ headerTitle: "About" }}
+        options={{
+          headerShown: true,
+          headerTitle: (props) => <DefaultHeader {...props} />,
+        }}
       />
     </TabAboutStack.Navigator>
   );

@@ -10,15 +10,37 @@ import { TouchableOpacity } from "react-native";
 import { TextInput } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import DefaultModal from "../components/DefaultModal";
+import { Audio } from "expo-av";
 
 export default function LettersScreen({ navigation }) {
-  const [letter, setLetter] = useState(RandomLetters());
+  const [letter, setLetter] = useState(null);
   const [pokemonId, setPokemonId] = useState(randomNumberForPokemonId());
   const [pokemonName, setPokemonName] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [letterAnswered, setLetterAnswered] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [isThrowPokeball, setIsThrowPokeball] = useState(false);
+  const [sound, setSound] = useState();
+
+  async function playSound() {
+    if (letter == null) return;
+    const { sound } = await Audio.Sound.createAsync(letter.sound);
+    setSound(sound);
+
+    // console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    playSound();
+    return sound
+      ? () => {
+          // console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [letter]);
 
   function suffle() {
     setLetter(RandomLetters());
@@ -28,9 +50,16 @@ export default function LettersScreen({ navigation }) {
     return Math.floor(Math.random() * 1025) + 1;
   }
 
+  function throwAndCatchPokeball() {
+    setIsThrowPokeball(true);
+    setTimeout(() => {
+      setIsThrowPokeball(false);
+    }, 2000);
+  }
+
   async function onCheckLetter(changedText) {
     setLetterAnswered(changedText);
-
+    setIsLoading(true);
     if (changedText !== "") {
       if (changedText === letter.letter) {
         let randomNumber = randomNumberForPokemonId();
@@ -38,6 +67,7 @@ export default function LettersScreen({ navigation }) {
         await getNamePokemonById();
         setModalVisible(true);
         setIsCorrect(true);
+
         if (SecureStore.getItem("pokemons")) {
           const obj = JSON.parse(SecureStore.getItem("pokemons"));
           const objPokemon = {
@@ -47,24 +77,25 @@ export default function LettersScreen({ navigation }) {
           };
           obj.push(objPokemon);
           SecureStore.setItem("pokemons", JSON.stringify(obj));
-        } else {
-          SecureStore.setItem("pokemons", JSON.stringify([]));
         }
-        console.log(SecureStore.getItem("pokemons"));
-
+        throwAndCatchPokeball();
+        setIsLoading(false);
         setTimeout(() => {
           setModalVisible(false);
           suffle();
           setIsCorrect(false);
           setPokemonName(null);
+
           setLetterAnswered("");
         }, 5000);
       } else {
+        setIsLoading(false);
         setModalVisible(true);
         setIsCorrect(false);
         setTimeout(() => {
           setModalVisible(false);
           setPokemonName(null);
+
           setLetterAnswered("");
         }, 5000);
       }
@@ -73,6 +104,9 @@ export default function LettersScreen({ navigation }) {
 
   useEffect(() => {
     suffle();
+    if (!SecureStore.getItem("pokemons")) {
+      SecureStore.setItem("pokemons", JSON.stringify([]));
+    }
   }, []);
 
   async function getNamePokemonById() {
@@ -97,12 +131,24 @@ export default function LettersScreen({ navigation }) {
                 color: isCorrect ? "#00ff3b" : "#e1ff00",
               }}
             >
-              {isCorrect
-                ? "Yeaaay... Mas Airil Bener!"
-                : "Ayo coba lagi mas airil!"}
+              {isCorrect ? "Yeaaay... Bener!" : "Ayo coba lagi!"}
             </Text>
             {isLoading ? (
-              <Text style={styles.textModal}>Sedang mengambil pokemon...</Text>
+              <Text style={styles.textModal}>Sedang Check Huruf</Text>
+            ) : null}
+            {isThrowPokeball ? (
+              <>
+                <Image
+                  source={require("../assets/images/throw-pokeball.gif")}
+                  style={{
+                    width: 200,
+                    height: 200,
+                    borderRadius: 10,
+                    opacity: 0.7,
+                  }}
+                />
+                <Text style={styles.textModal}>Sedang mengambil pokemon</Text>
+              </>
             ) : pokemonName !== null ? (
               <>
                 <Image
@@ -112,7 +158,7 @@ export default function LettersScreen({ navigation }) {
                   style={{ width: 100, height: 100 }}
                 />
                 <Text style={styles.textModal}>
-                  Mas Airil Dapet Pokemon {pokemonName}
+                  Dapet Pokemon {pokemonName}
                 </Text>
               </>
             ) : (
@@ -124,12 +170,11 @@ export default function LettersScreen({ navigation }) {
       <TouchableOpacity style={styles.btn} activeOpacity={0.5} onPress={suffle}>
         <Text>Acak Huruf</Text>
       </TouchableOpacity>
-      <Text style={styles.bigTitle}>{letter.letter}</Text>
+      <Text style={styles.bigTitle}>{letter?.letter || "?"}</Text>
       <Text>Huruf Apakah ini?</Text>
       {/* <KeyboardAvoidingView behavior="padding"> */}
       <TextInput
         style={styles.title}
-        onFocus={suffle}
         keyboardAppearance="dark"
         autoCapitalize={"characters"}
         value={letterAnswered}

@@ -4,12 +4,35 @@ import { Text, View } from "../components/Themed";
 import ListMenu from "../components/ListMenu";
 import { MonoText } from "../components/StyledText";
 import Colors from "../constants/Colors";
+import { Audio } from "expo-av";
+import { useEffect, useState } from "react";
 
 export default function HomeScreen({ navigation }) {
+  const [sound, setSound] = useState();
+
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../assets/audio/home-pikachu.mp3")
+    );
+    setSound(sound);
+
+    // console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    playSound();
+    return sound
+      ? () => {
+          // console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
   return (
     <View style={styles.container}>
       <Image
-        source={require("../assets/images/bg-pokemon.png")}
+        source={require("../assets/images/pika-eat.gif")}
         style={{ width: 100, height: 100 }}
       />
       <MonoText style={styles.title}>Silahkan Pilih</MonoText>
