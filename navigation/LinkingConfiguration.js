@@ -6,24 +6,24 @@
 import * as Linking from "expo-linking";
 
 export default {
-  prefixes: [Linking.createURL("/")],
-  config: {
-    screens: {
-      Root: {
+    prefixes: [Linking.createURL("/")],
+    config: {
         screens: {
-          TabOne: {
-            screens: {
-              TabOneScreen: "one",
+            Root: {
+                screens: {
+                    TabOne: {
+                        screens: {
+                            HomeScreen: "HomeScreen",
+                        },
+                    },
+                    TabTwo: {
+                        screens: {
+                            AboutScreen: "AboutScreen",
+                        },
+                    },
+                },
             },
-          },
-          TabTwo: {
-            screens: {
-              TabTwoScreen: "two",
-            },
-          },
+            NotFound: "*",
         },
-      },
-      NotFound: "*",
     },
-  },
 };

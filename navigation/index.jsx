@@ -6,8 +6,10 @@ import {
   NavigationContainer,
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import DefaultHeader from "../components/DefaultHeader";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
+import LettersScreen from "../screens/LettersScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 
@@ -30,6 +32,16 @@ function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Root" component={BottomTabNavigator} />
+      <Stack.Screen
+        name="Letters"
+        component={LettersScreen}
+        options={{
+          headerShown: true,
+          title: "Belajar Alphabet",
+          headerBackTitleVisible: false,
+          headerTitle: (props) => <DefaultHeader {...props} />,
+        }}
+      />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
